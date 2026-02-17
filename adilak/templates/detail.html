@@ -1,0 +1,250 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Quotation Items – Ruchaka Engineering{% endblock %}
+
+{% block content %}
+
+<div class="container py-3">
+
+    <h5 class="mb-3 fw-semibold">Selected Items</h5>
+
+    {% if cart_items %}
+        <!-- Header Row -->
+        <div class="row g-2 mb-2 fw-bold small text-center text-muted border-bottom pb-2">
+            <div class="col-lg-1 col-md-2">Item</div>
+            <div class="col-lg-3 col-md-4">Description</div>
+            <div class="col-lg-2 col-md-2">Price (₹)</div>
+            <div class="col-lg-1 col-md-1">Qty</div>
+            <div class="col-lg-2 col-md-2">Total (₹)</div>
+            <div class="col-lg-1 col-md-1">Labour (₹)</div>
+            <div class="col-lg-2 col-md-2">Subtotal (₹)</div>
+            <div class="col-lg-1 col-md-1"></div>
+        </div>
+
+        {% for entry in cart_items %}
+        <div class="row g-2 mb-4 align-items-center border-bottom pb-4 item-row small"
+             data-item-id="{{ entry.item.id }}"
+             data-price-q1="{{ entry.item.price_q1|default:0 }}"
+             data-price-q2="{{ entry.item.price_q2|default:0 }}"
+             data-price-q3="{{ entry.item.price_q3|default:0 }}">
+
+            <!-- 1. Item (Image + Name) -->
+            <div class="col-lg-1 col-md-2 text-center">
+                <div style="height: 60px; display: flex; align-items: center; justify-content: center;">
+                    {% if entry.item.image %}
+                        <img src="{{ entry.item.image.url }}" class="img-fluid rounded" 
+                             alt="{{ entry.item.product_name }}" style="max-height: 60px; object-fit: contain;">
+                    {% else %}
+                        <div class="bg-light border rounded d-flex align-items-center justify-content-center w-100 h-100">
+                            <i class="fa-solid fa-image text-muted small"></i>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="fw-bold small mt-1 text-truncate">{{ entry.item.product_name }}</div>
+            </div>
+
+            <!-- 2. Description -->
+            <div class="col-lg-3 col-md-4">
+                <div class="small lh-sm">
+                    <div><strong>Cat:</strong> {{ entry.item.category.name|truncatewords:5 }}</div>
+                    <div><strong>Co:</strong> {{ entry.item.company.name|truncatewords:4 }}</div>
+                    <div class="text-muted" style="max-height: 60px; overflow: hidden;">
+                        {{ entry.item.description|default:"-"|truncatewords:25 }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. Price (unit prices) -->
+            <div class="col-lg-2 col-md-2">
+                <div class="d-flex flex-column gap-1">
+                    <div class="border rounded px-2 py-1 bg-success-subtle d-flex justify-content-between very-small">
+                        <span>Q1</span><span>{{ entry.item.price_q1|default:"0" }}</span>
+                    </div>
+                    <div class="border rounded px-2 py-1 bg-warning-subtle d-flex justify-content-between very-small">
+                        <span>Q2</span><span>{{ entry.item.price_q2|default:"0" }}</span>
+                    </div>
+                    <div class="border rounded px-2 py-1 bg-danger-subtle d-flex justify-content-between very-small">
+                        <span>Q3</span><span>{{ entry.item.price_q3|default:"0" }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. Quantity -->
+            <div class="col-lg-1 col-md-1">
+                <form method="post" action="{% url 'update_cart_quantity' entry.item.id %}">
+                    {% csrf_token %}
+                    <div class="input-group input-group-sm">
+                        <input type="number" name="quantity" value="{{ entry.quantity }}" min="1" 
+                               class="form-control form-control-sm text-center qty-input" 
+                               style="width: 50px;" data-item-id="{{ entry.item.id }}">
+                        <button type="submit" class="btn btn-outline-secondary btn-sm px-1">
+                            <i class="fa-solid fa-check"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- 5. Total (Qty × price) -->
+            <div class="col-lg-2 col-md-2">
+                <div class="d-flex flex-column gap-1">
+                    <div class="border rounded px-2 py-1 bg-success-subtle d-flex justify-content-between very-small">
+                        <span>Q1</span><strong><span class="total-value-q1">0</span></strong>
+                    </div>
+                    <div class="border rounded px-2 py-1 bg-warning-subtle d-flex justify-content-between very-small">
+                        <span>Q2</span><strong><span class="total-value-q2">0</span></strong>
+                    </div>
+                    <div class="border rounded px-2 py-1 bg-danger-subtle d-flex justify-content-between very-small">
+                        <span>Q3</span><strong><span class="total-value-q3">0</span></strong>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 6. Labour Charge -->
+            <div class="col-lg-1 col-md-1">
+                <input type="number" class="form-control form-control-sm labour-input text-center" 
+                       value="{{ entry.labour|default:0 }}" min="0" step="1" style="width: 70px;" 
+                       data-item-id="{{ entry.item.id }}">
+            </div>
+
+            <!-- 7. Subtotal (Labour + Total) -->
+            <div class="col-lg-2 col-md-2">
+                <div class="d-flex flex-column gap-1">
+                    <div class="border rounded px-2 py-1 bg-success-subtle d-flex justify-content-between very-small">
+                        <span>Q1</span><strong><span class="subtotal-q1">0</span></strong>
+                    </div>
+                    <div class="border rounded px-2 py-1 bg-warning-subtle d-flex justify-content-between very-small">
+                        <span>Q2</span><strong><span class="subtotal-q2">0</span></strong>
+                    </div>
+                    <div class="border rounded px-2 py-1 bg-danger-subtle d-flex justify-content-between very-small">
+                        <span>Q3</span><strong><span class="subtotal-q3">0</span></strong>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Remove -->
+            <div class="col-lg-1 col-md-1 text-center align-self-center">
+                <form method="post" action="{% url 'remove_from_cart' entry.item.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-sm btn-link text-danger p-0">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                </form>
+            </div>
+
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="text-center py-4 text-muted small">
+            <i class="fa-solid fa-cart-plus fa-lg mb-2 opacity-75"></i>
+            <p class="mb-0">No items added yet</p>
+        </div>
+    {% endif %}
+
+    <!-- Action buttons -->
+    <div class="mt-4 d-flex gap-2 flex-wrap justify-content-center justify-content-md-start">
+        <a href="{% url 'select_items' %}" class="btn btn-sm btn-outline-secondary">
+            <i class="fa-solid fa-plus me-1"></i>Add
+        </a>
+        <form method="post" action="{% url 'save_quotation' %}" class="m-0">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-sm btn-outline-primary">
+                <i class="fa-solid fa-floppy-disk me-1"></i>Save
+            </button>
+        </form>
+        <a href="{% url 'generate_excel' %}" class="btn btn-sm btn-success">
+            <i class="fa-solid fa-file-excel me-1"></i>Excel
+        </a>
+    </div>
+
+</div>
+
+<style>
+    .very-small { font-size: 0.78rem; line-height: 1.1; }
+    .item-row .form-control-sm { height: calc(1.6rem + 2px); font-size: 0.82rem; padding: 0.25rem 0.5rem; }
+    .item-row .btn-sm { font-size: 0.75rem; padding: 0.2rem 0.5rem; }
+    .border { border-color: #dee2e6 !important; }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.item-row').forEach(row => {
+        const qtyInput     = row.querySelector('.qty-input');
+        const labourInput  = row.querySelector('.labour-input');
+        
+        const totals = {
+            q1: row.querySelector('.total-value-q1'),
+            q2: row.querySelector('.total-value-q2'),
+            q3: row.querySelector('.total-value-q3')
+        };
+        
+        const subtotals = {
+            q1: row.querySelector('.subtotal-q1'),
+            q2: row.querySelector('.subtotal-q2'),
+            q3: row.querySelector('.subtotal-q3')
+        };
+
+        const p1 = parseFloat(row.dataset.priceQ1) || 0;
+        const p2 = parseFloat(row.dataset.priceQ2) || 0;
+        const p3 = parseFloat(row.dataset.priceQ3) || 0;
+
+        function updateCalculations() {
+            const qty    = parseFloat(qtyInput.value)    || 0;
+            const labour = parseFloat(labourInput.value) || 0;
+
+            totals.q1.textContent    = (qty * p1).toFixed(0);
+            totals.q2.textContent    = (qty * p2).toFixed(0);
+            totals.q3.textContent    = (qty * p3).toFixed(0);
+
+            subtotals.q1.textContent = ((qty * p1) + labour).toFixed(0);
+            subtotals.q2.textContent = ((qty * p2) + labour).toFixed(0);
+            subtotals.q3.textContent = ((qty * p3) + labour).toFixed(0);
+        }
+
+        // Real-time update on frontend
+        qtyInput.addEventListener('input', updateCalculations);
+        labourInput.addEventListener('input', updateCalculations);
+
+        // Save labour to backend when changed
+        labourInput.addEventListener('change', function() {
+            const labourValue = parseFloat(this.value) || 0;
+            const itemId = this.dataset.itemId;
+
+            // Debounce to avoid too many requests while typing
+            clearTimeout(window.labourTimeout);
+            window.labourTimeout = setTimeout(() => {
+                fetch("{% url 'update_labour' %}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: JSON.stringify({
+                        item_id: itemId,
+                        labour: labourValue
+                    })
+                })
+                .then(response => {
+                    if (!response.ok) throw new Error('Network error');
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.status === 'ok') {
+                        console.log('Labour saved:', data.labour);
+                        labourInput.style.borderColor = '#28a745';
+                        setTimeout(() => labourInput.style.borderColor = '', 1500);
+                    } else {
+                        console.error('Save failed:', data.message);
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+            }, 600);
+        });
+
+        // Initial calculation
+        updateCalculations();
+    });
+});
+</script>
+
+{% endblock %}
