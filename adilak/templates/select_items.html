@@ -5,95 +5,85 @@
 
 {% block content %}
 
-<div class="container py-5">
+<div class="container py-4">
     <div class="row justify-content-center">
-        <div class="col-lg-10 col-xl-8">
+        <div class="col-lg-8 col-xl-6">
 
-            <!-- Main Card -->
-            <div class="card-modern shadow-lg border-0 overflow-hidden">
-                <div class="card-header-modern bg-gradient-primary text-white py-4 px-4">
-                    <h3 class="mb-0 fw-semibold">Add Product to Quotation</h3>
-                    <p class="text-white-75 small mt-1 mb-0">
-                        Search and select electrical items with category & company details
-                    </p>
-                </div>
+            <!-- Compact professional form -->
+            <div class="bg-white shadow-sm border rounded-3 p-4">
+                <h5 class="mb-4 fw-semibold text-center text-dark">
+                    Add Product to Quotation
+                </h5>
 
-                <div class="card-body p-4 p-md-5">
-                    <form id="item-selection-form" method="post" action="{% url 'add_item' %}">
-                        {% csrf_token %}
+                <form id="item-selection-form" method="post" action="{% url 'add_item' %}">
+                    {% csrf_token %}
 
-                        <!-- Product Search with Autocomplete -->
-                        <div class="mb-4 position-relative">
-                            <label for="product-input" class="form-label fw-medium">Product Name</label>
+                    <!-- Product Search -->
+                    <div class="mb-3 position-relative">
+                        <label for="product-input" class="form-label small fw-medium mb-1">Product Name</label>
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-text bg-light border-end-0"><i class="fa-solid fa-search small"></i></span>
                             <input 
                                 type="text" 
-                                class="form-control form-control-lg modern-input" 
+                                class="form-control border-start-0" 
                                 id="product-input" 
-                                placeholder="Start typing product name (min 2 characters)..." 
+                                placeholder="Type product name..." 
                                 autocomplete="off"
                             >
-                            <input type="hidden" name="product_name" id="selected-product">
-                            <div id="suggestions" class="suggestion-box shadow-sm"></div>
-                            <div class="form-text text-muted mt-1">
-                                <i class="fa-solid fa-magnifying-glass me-1"></i>
-                                Type to search – suggestions appear instantly
-                            </div>
                         </div>
+                        <input type="hidden" name="product_name" id="selected-product">
+                        <div id="suggestions" class="suggestion-box shadow-sm"></div>
+                    </div>
 
-                        <!-- Category -->
-                        <div class="mb-4">
-                            <label for="category-select" class="form-label fw-medium">Category</label>
-                            <select class="form-select form-select-lg modern-select" id="category-select" name="category" disabled>
-                                <option value="">— Select category —</option>
-                            </select>
-                        </div>
+                    <!-- Category -->
+                    <div class="mb-3">
+                        <label for="category-select" class="form-label small fw-medium mb-1">Category</label>
+                        <select class="form-select form-select-sm" id="category-select" name="category" disabled>
+                            <option value="">— Select category —</option>
+                        </select>
+                    </div>
 
-                        <!-- Company -->
-                        <div class="mb-5">
-                            <label for="company-select" class="form-label fw-medium">Company / Brand</label>
-                            <select class="form-select form-select-lg modern-select" id="company-select" name="company" disabled>
-                                <option value="">— Select company —</option>
-                            </select>
-                        </div>
+                    <!-- Company -->
+                    <div class="mb-4">
+                        <label for="company-select" class="form-label small fw-medium mb-1">Company / Brand</label>
+                        <select class="form-select form-select-sm" id="company-select" name="company" disabled>
+                            <option value="">— Select company —</option>
+                        </select>
+                    </div>
 
-                        <!-- Submit Button -->
-                        <div class="d-grid gap-2">
-                            <button 
-                                type="submit" 
-                                class="btn btn-modern btn-success btn-lg fw-semibold" 
-                                id="add-btn" 
-                                disabled
-                            >
-                                <i class="fa-solid fa-plus-circle me-2"></i>Add to Quotation
-                            </button>
-                        </div>
-                    </form>
-                </div>
+                    <!-- Submit Button -->
+                    <div class="d-grid">
+                        <button 
+                            type="submit" 
+                            class="btn btn-success btn-sm fw-medium" 
+                            id="add-btn" 
+                            disabled
+                        >
+                            <i class="fa-solid fa-plus me-1"></i> Add to Quotation
+                        </button>
+                    </div>
+                </form>
             </div>
 
-            <!-- Cart Summary (if items exist) -->
+            <!-- Cart Summary – minimal & clean -->
             {% if cart_items %}
-            <div class="card-modern shadow mt-5 border-0 overflow-hidden">
-                <div class="card-header-modern bg-gradient-info text-white py-3 px-4">
-                    <h5 class="mb-0 fw-semibold">Current Quotation Items</h5>
-                </div>
-                <div class="card-body p-4">
-                    <ul class="list-group list-group-flush">
-                        {% for entry in cart_items %}
-                        <li class="list-group-item bg-transparent border-0 px-0 py-3 d-flex justify-content-between align-items-center">
-                            <div>
-                                <strong>{{ entry.item.product_name }}</strong>
-                                <span class="text-muted ms-2">({{ entry.item.company.name }})</span>
-                            </div>
-                            <i class="fa-solid fa-check-circle text-success"></i>
-                        </li>
-                        {% empty %}
-                        <li class="list-group-item text-center text-muted py-4">
-                            No items added yet
-                        </li>
-                        {% endfor %}
-                    </ul>
-                </div>
+            <div class="mt-4 bg-white shadow-sm border rounded-3 p-3">
+                <h6 class="mb-3 fw-medium text-center small">Current Quotation Items</h6>
+                <ul class="list-group list-group-flush small">
+                    {% for entry in cart_items %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center py-2 px-0 border-bottom">
+                        <div>
+                            <strong>{{ entry.item.product_name }}</strong>
+                            <span class="text-muted ms-2">({{ entry.item.company.name }})</span>
+                        </div>
+                        <i class="fa-solid fa-check-circle text-success small"></i>
+                    </li>
+                    {% empty %}
+                    <li class="list-group-item text-center text-muted py-3 small">
+                        No items added yet
+                    </li>
+                    {% endfor %}
+                </ul>
             </div>
             {% endif %}
 
@@ -102,231 +92,197 @@
 </div>
 
 <style>
-    .card-modern {
-        border-radius: 1.25rem;
-        background: rgba(255, 255, 255, 0.97);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(0,0,0,0.06);
-        transition: all 0.3s ease;
-    }
-    .card-modern:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 20px 40px rgba(0,0,0,0.12) !important;
+    /* Compact single-line styling */
+    .form-control-sm,
+    .form-select-sm {
+        font-size: 0.875rem;
+        height: calc(1.8rem + 2px);
+        padding: 0.25rem 0.5rem;
     }
 
-    .card-header-modern {
-        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-        border-bottom: none;
+    .input-group-sm .form-control {
+        height: calc(1.8rem + 2px);
     }
 
-    .modern-input,
-    .modern-select {
-        border-radius: 0.75rem;
-        border: 1px solid #d1d5db;
-        padding: 0.75rem 1rem;
-        font-size: 1.05rem;
-        transition: all 0.2s ease;
-    }
-    .modern-input:focus,
-    .modern-select:focus {
-        border-color: var(--primary);
-        box-shadow: 0 0 0 0.25rem rgba(200, 16, 46, 0.15);
-        outline: none;
+    .input-group-text {
+        font-size: 0.85rem;
+        padding: 0.25rem 0.5rem;
     }
 
-    .btn-modern {
-        border-radius: 0.75rem;
-        padding: 0.85rem 1.5rem;
-        font-size: 1.1rem;
-        transition: all 0.25s ease;
-        background: linear-gradient(135deg, #16a34a 0%, #22c55e 100%);
-        border: none;
-    }
-    .btn-modern:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 24px rgba(22, 163, 74, 0.3);
+    .btn-sm {
+        font-size: 0.875rem;
+        padding: 0.35rem 1rem;
     }
 
-    .bg-gradient-primary {
-        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-    }
-    .bg-gradient-info {
-        background: linear-gradient(135deg, #0ea5e9 0%, #38bdf8 100%);
-    }
-
-    /* Autocomplete suggestions – modern look */
     .suggestion-box {
         position: absolute;
         top: 100%;
         left: 0;
         right: 0;
-        max-height: 260px;
+        max-height: 200px;
         overflow-y: auto;
         background: white;
-        border: 1px solid rgba(0,0,0,0.1);
-        border-radius: 0.75rem;
-        margin-top: 6px;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+        border: 1px solid #ced4da;
+        border-radius: 0.375rem;
+        margin-top: 4px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
         z-index: 1000;
         display: none;
     }
+
     .suggestion-item {
-        padding: 0.75rem 1.25rem;
+        padding: 0.45rem 1rem;
         cursor: pointer;
-        transition: background 0.15s;
-        font-size: 1.05rem;
+        font-size: 0.9rem;
     }
-    .suggestion-item:hover,
-    .suggestion-item:focus {
-        background: #f1f5f9;
+
+    .suggestion-item:hover {
+        background: #f8f9fa;
         color: var(--primary);
     }
 
+    .bg-white.shadow-sm.border {
+        border-color: #dee2e6 !important;
+    }
+
     @media (max-width: 576px) {
-        .card-body { padding: 1.5rem !important; }
-        .modern-input, .modern-select { font-size: 1rem; }
+        .container { padding-left: 1rem; padding-right: 1rem; }
+        h5 { font-size: 1.25rem; }
     }
 </style>
 
-<!-- Your existing JavaScript remains almost unchanged – just a small improvement -->
 <script>
-    // ────────────────────────────────────────────────────────────────
-    // Your current autocomplete + cascading dropdown logic
-    // (kept mostly as-is, with minor robustness improvements)
-    // ────────────────────────────────────────────────────────────────
+// Autocomplete + cascading logic (kept clean & functional)
+(function() {
+    const productInput     = document.getElementById('product-input');
+    const selectedProduct  = document.getElementById('selected-product');
+    const suggestionsDiv   = document.getElementById('suggestions');
+    const categorySelect   = document.getElementById('category-select');
+    const companySelect    = document.getElementById('company-select');
+    const addBtn           = document.getElementById('add-btn');
 
-    (function() {
-        const productInput     = document.getElementById('product-input');
-        const selectedProduct  = document.getElementById('selected-product');
-        const suggestionsDiv   = document.getElementById('suggestions');
-        const categorySelect   = document.getElementById('category-select');
-        const companySelect    = document.getElementById('company-select');
-        const addBtn           = document.getElementById('add-btn');
+    let abortCtrl = null;
+    let hideTimer = null;
 
-        let abortCtrl = null;
-        let hideTimer = null;
+    document.addEventListener('click', e => {
+        if (!productInput.contains(e.target) && !suggestionsDiv.contains(e.target)) {
+            suggestionsDiv.style.display = 'none';
+        }
+    });
 
-        // Close suggestions when clicking outside
-        document.addEventListener('click', e => {
-            if (!productInput.contains(e.target) && !suggestionsDiv.contains(e.target)) {
+    productInput.addEventListener('input', async function() {
+        const q = this.value.trim();
+        if (q.length < 2) {
+            suggestionsDiv.style.display = 'none';
+            return;
+        }
+
+        if (abortCtrl) abortCtrl.abort();
+        abortCtrl = new AbortController();
+
+        try {
+            const res = await fetch(`/api/products/?q=${encodeURIComponent(q)}`, { signal: abortCtrl.signal });
+            if (!res.ok) throw new Error();
+            const products = await res.json();
+            renderSuggestions(products);
+        } catch (err) {
+            if (err.name !== 'AbortError') console.error(err);
+        }
+    });
+
+    function renderSuggestions(products) {
+        suggestionsDiv.innerHTML = '';
+        if (!products?.length) {
+            suggestionsDiv.style.display = 'none';
+            return;
+        }
+
+        products.forEach(name => {
+            const div = document.createElement('div');
+            div.className = 'suggestion-item';
+            div.textContent = name;
+            div.onclick = () => {
+                productInput.value = name;
+                selectedProduct.value = name;
                 suggestionsDiv.style.display = 'none';
-            }
+                loadCategories(name);
+            };
+            suggestionsDiv.appendChild(div);
         });
+        suggestionsDiv.style.display = 'block';
+    }
 
-        productInput.addEventListener('input', async function() {
-            const q = this.value.trim();
-            if (q.length < 2) {
-                suggestionsDiv.style.display = 'none';
-                return;
-            }
-
-            if (abortCtrl) abortCtrl.abort();
-            abortCtrl = new AbortController();
-
-            try {
-                const res = await fetch(`/api/products/?q=${encodeURIComponent(q)}`, { signal: abortCtrl.signal });
-                if (!res.ok) throw new Error('Network error');
-                const products = await res.json();
-                renderSuggestions(products);
-            } catch (err) {
-                if (err.name !== 'AbortError') console.error(err);
-            }
-        });
-
-        function renderSuggestions(products) {
-            suggestionsDiv.innerHTML = '';
-            if (!products?.length) {
-                suggestionsDiv.style.display = 'none';
-                return;
-            }
-
-            products.forEach(name => {
-                const div = document.createElement('div');
-                div.className = 'suggestion-item';
-                div.textContent = name;
-                div.onclick = () => {
-                    productInput.value = name;
-                    selectedProduct.value = name;
-                    suggestionsDiv.style.display = 'none';
-                    loadCategories(name);
-                };
-                suggestionsDiv.appendChild(div);
+    async function loadCategories(product) {
+        try {
+            const res = await fetch(`/api/categories/?product=${encodeURIComponent(product)}`);
+            const data = await res.json();
+            categorySelect.innerHTML = '<option value="">— Select category —</option>';
+            data.forEach(c => {
+                const opt = new Option(c.name, c.id);
+                categorySelect.add(opt);
             });
-            suggestionsDiv.style.display = 'block';
+            categorySelect.disabled = false;
+            companySelect.innerHTML = '<option value="">— Select company —</option>';
+            companySelect.disabled = true;
+            addBtn.disabled = true;
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    categorySelect.onchange = async function() {
+        const catId = this.value;
+        const prod = selectedProduct.value;
+        if (!catId || !prod) {
+            companySelect.innerHTML = '<option value="">— Select company —</option>';
+            companySelect.disabled = true;
+            addBtn.disabled = true;
+            return;
         }
 
-        async function loadCategories(product) {
-            try {
-                const res = await fetch(`/api/categories/?product=${encodeURIComponent(product)}`);
-                const data = await res.json();
+        try {
+            const res = await fetch(`/api/companies/?product=${encodeURIComponent(prod)}&category=${catId}`);
+            const data = await res.json();
+            companySelect.innerHTML = '<option value="">— Select company —</option>';
+            data.forEach(c => {
+                const opt = new Option(c.name, c.id);
+                companySelect.add(opt);
+            });
+            companySelect.disabled = false;
+            addBtn.disabled = true;
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    companySelect.onchange = function() {
+        addBtn.disabled = !(
+            selectedProduct.value &&
+            categorySelect.value &&
+            companySelect.value
+        );
+    };
+
+    productInput.onblur = () => {
+        hideTimer = setTimeout(() => {
+            if (productInput.value !== selectedProduct.value) {
+                selectedProduct.value = '';
+                categorySelect.disabled = true;
                 categorySelect.innerHTML = '<option value="">— Select category —</option>';
-                data.forEach(c => {
-                    const opt = new Option(c.name, c.id);
-                    categorySelect.add(opt);
-                });
-                categorySelect.disabled = false;
-                companySelect.innerHTML = '<option value="">— Select company —</option>';
                 companySelect.disabled = true;
-                addBtn.disabled = true;
-            } catch (err) {
-                console.error('Categories fetch failed:', err);
-            }
-        }
-
-        categorySelect.onchange = async function() {
-            const catId = this.value;
-            const prod = selectedProduct.value;
-            if (!catId || !prod) {
                 companySelect.innerHTML = '<option value="">— Select company —</option>';
-                companySelect.disabled = true;
                 addBtn.disabled = true;
-                return;
             }
+            suggestionsDiv.style.display = 'none';
+        }, 200);
+    };
 
-            try {
-                const res = await fetch(`/api/companies/?product=${encodeURIComponent(prod)}&category=${catId}`);
-                const data = await res.json();
-                companySelect.innerHTML = '<option value="">— Select company —</option>';
-                data.forEach(c => {
-                    const opt = new Option(c.name, c.id);
-                    companySelect.add(opt);
-                });
-                companySelect.disabled = false;
-                addBtn.disabled = true;
-            } catch (err) {
-                console.error('Companies fetch failed:', err);
-            }
-        };
+    productInput.onfocus = () => {
+        if (hideTimer) clearTimeout(hideTimer);
+    };
 
-        companySelect.onchange = function() {
-            addBtn.disabled = !(
-                selectedProduct.value &&
-                categorySelect.value &&
-                companySelect.value
-            );
-        };
-
-        // Reset on blur if value not confirmed
-        productInput.onblur = () => {
-            hideTimer = setTimeout(() => {
-                if (productInput.value !== selectedProduct.value) {
-                    selectedProduct.value = '';
-                    categorySelect.disabled = true;
-                    categorySelect.innerHTML = '<option value="">— Select category —</option>';
-                    companySelect.disabled = true;
-                    companySelect.innerHTML = '<option value="">— Select company —</option>';
-                    addBtn.disabled = true;
-                }
-                suggestionsDiv.style.display = 'none';
-            }, 180);
-        };
-
-        productInput.onfocus = () => {
-            if (hideTimer) clearTimeout(hideTimer);
-        };
-
-        suggestionsDiv.onmousedown = e => e.preventDefault();
-    })();
+    suggestionsDiv.onmousedown = e => e.preventDefault();
+})();
 </script>
 
 {% endblock %}
